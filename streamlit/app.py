@@ -145,7 +145,7 @@ if page == "Air Quality Monitor":
 		zoom_start=13,
 		control_scale=True,
 		scrollWheelZoom=True,
-		tiles="OpenStreetMap",
+		tiles="CartoDB positron",
 	)
 
 	from folium.features import DivIcon
@@ -530,7 +530,7 @@ elif page == "AOD Derived PM2.5 Heatmap":
 		heat_data = selected_df[["latitude", "longitude", "PM2.5"]].values.tolist()
 
 	# Map setup
-	m = folium.Map(location=[-6.2, 106.9], zoom_start=11, tiles="OpenStreetMap")
+	m = folium.Map(location=[-6.2, 106.9], zoom_start=11, tiles="CartoDB positron")
 
 	# Add heatmap layer
 	from folium.plugins import HeatMap
