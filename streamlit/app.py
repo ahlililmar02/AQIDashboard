@@ -322,7 +322,7 @@ if page == "Air Quality Monitor":
 					col1.markdown(card_style(label="Time", value=time_value), unsafe_allow_html=True)
 
 					# Column 2: AQI with color
-					col2.markdown(card_style(label="AQI", value=f"{aqi_value:.0f}", bg_color=color), unsafe_allow_html=True)
+					col2.markdown(card_style(label="AQI", value=f"{aqi_value:.0f}", color=color), unsafe_allow_html=True)
 
 					# Column 3: PM2.5
 					col3.markdown(card_style(label="PM2.5", value=f"{pm_value:.1f} µg/m³"), unsafe_allow_html=True)
