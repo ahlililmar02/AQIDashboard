@@ -496,14 +496,18 @@ if page == "Air Quality Monitor":
 
 	with st.container(key="about"):
 			st.markdown("""
-			### What is the Air Quality Index (AQI)?
+			<div style="font-size:16px; font-weight:600; margin-bottom:10px;">
+					What is the Air Quality Index (AQI)?
+				</div>
+			   
+			<div style="font-size:14px; font-weight:600; margin-bottom:10px;">
 			The **Air Quality Index (AQI)** is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
-
+			</div>
 			<style>
 			.aqi-table {
 				border-collapse: collapse;
 				width: 100%;
-				font-size: 13.5px;
+				font-size: 12px;
 			}
 			.aqi-table th, .aqi-table td {
 				border: 1px solid #ddd;
