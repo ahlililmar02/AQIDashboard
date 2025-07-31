@@ -32,7 +32,7 @@ st.markdown("""
 with st.sidebar:
     page = option_menu(
         "Main Menu",
-        ["📊 Dashboard", "🗺️ Air Quality Jakarta Map", "🌫️ AOD Derived PM2.5 Heatmap"],
+        ["Air Quality Monitor", "Download Data", "AOD Derived PM2.5 Heatmap"],
         icons=["bar-chart", "map", "cloud"],
         menu_icon="cast",
         default_index=0
@@ -90,7 +90,7 @@ df_today_avg = df_today.groupby("station")[["aqi", "PM2.5"]].mean().reset_index(
 df_today_avg = df_today_avg[df_today_avg["aqi"].notna() & (df_today_avg["aqi"] != 0)]
 
 
-if page == "📊 Dashboard":
+if page == "Air Quality Monitor":
 	st.title("Real-Time Air Quality Dashboard")
 
 	import datetime
@@ -451,7 +451,7 @@ if page == "📊 Dashboard":
 
 
 # 📁 PAGE 2: FILTER & DOWNLOAD
-elif page == "⬇️ Download Data":
+elif page == "Download Data":
 	st.title("Download Air Quality Data")
 	css = """
 		.st-key-selector_box {
@@ -483,8 +483,11 @@ elif page == "⬇️ Download Data":
 	csv = filtered.to_csv(index=False).encode('utf-8')
 	st.download_button("Download as CSV", data=csv, file_name="air_quality_filtered.csv", mime="text/csv")
 
-elif page == "🌫️ AOD Derived PM2.5 Heatmap":
-	st.title("🌫️ AOD Derived PM2.5 Heatmap Over Jakarta")
+
+
+
+elif page == "AOD Derived PM2.5 Heatmap":
+	st.title("AOD Derived PM2.5 Heatmap Over Jakarta")
 
 	# Convert and filter df
 	df['time'] = pd.to_datetime(df['time'])
