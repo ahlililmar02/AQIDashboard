@@ -414,7 +414,7 @@ if page == "Air Quality Monitor":
 					Highest AQI Today
 				</div>
 				""", unsafe_allow_html=True)
-
+				st.markdown("<br>", unsafe_allow_html=True)
 				df_today_avg["color"] = df_today_avg["aqi"].apply(get_rgba_color)
 
 				# Top 5
@@ -454,6 +454,7 @@ if page == "Air Quality Monitor":
 					Lowest AQI Today
 				</div>
 				""", unsafe_allow_html=True)
+				st.markdown("<br>", unsafe_allow_html=True)
 				low5_today = df_today_avg.sort_values("aqi", ascending=True).head(5)
 				low5_today = low5_today.rename(columns={"PM2.5": "pm25"})
 
@@ -495,56 +496,57 @@ if page == "Air Quality Monitor":
 
 	with st.container(key="about"):
 			st.markdown("""
-				### What is the Air Quality Index (AQI)?
-				The **Air Quality Index (AQI)** is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
+			### What is the Air Quality Index (AQI)?
+			The **Air Quality Index (AQI)** is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
 
-				<style>
-				.aqi-table {
-					border-collapse: collapse;
-					width: 100%;
-				}
-				.aqi-table th, .aqi-table td {
-					border: 1px solid #ddd;
-					padding: 8px;
-					text-align: center;
-				}
-				.aqi-table th {
-					background-color: #f2f2f2;
-				}
-				</style>
+			<style>
+			.aqi-table {
+				border-collapse: collapse;
+				width: 100%;
+				font-size: 13.5px;
+			}
+			.aqi-table th, .aqi-table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: center;
+			}
+			.aqi-table th {
+				background-color: #f2f2f2;
+			}
+			</style>
 
-				<table class="aqi-table">
-				<tr>
-					<th>AQI Range</th>
-					<th>Level of Health Concern</th>
-				</tr>
-				<tr>
-					<td>0 – 50</td>
-					<td style="background-color:#66c2a4;">Good</td> <!-- pastel green -->
-				</tr>
-				<tr>
-					<td>51 – 100</td>
-					<td style="background-color:#ffe066;">Moderate</td> <!-- pastel yellow -->
-				</tr>
-				<tr>
-					<td>101 – 150</td>
-					<td style="background-color:#ffb266;">Unhealthy for Sensitive Groups</td> <!-- pastel orange -->
-				</tr>
-				<tr>
-					<td>151 – 200</td>
-					<td style="background-color:#ff6666;">Unhealthy</td> <!-- pastel red -->
-				</tr>
-				<tr>
-					<td>201 – 300</td>
-					<td style="background-color:#b266ff;">Very Unhealthy</td> <!-- pastel purple -->
-				</tr>
-				<tr>
-					<td>301+</td>
-					<td style="background-color:#d2798f;">Hazardous</td> <!-- pastel maroon -->
-				</tr>
+			<table class="aqi-table">
+			<tr>
+				<th>AQI Range</th>
+				<th>Level of Health Concern</th>
+			</tr>
+			<tr>
+				<td>0 – 50</td>
+				<td style="background-color:#66c2a4;">Good</td>
+			</tr>
+			<tr>
+				<td>51 – 100</td>
+				<td style="background-color:#ffe066;">Moderate</td>
+			</tr>
+			<tr>
+				<td>101 – 150</td>
+				<td style="background-color:#ffb266;">Unhealthy for Sensitive Groups</td>
+			</tr>
+			<tr>
+				<td>151 – 200</td>
+				<td style="background-color:#ff6666;">Unhealthy</td>
+			</tr>
+			<tr>
+				<td>201 – 300</td>
+				<td style="background-color:#b266ff;">Very Unhealthy</td>
+			</tr>
+			<tr>
+				<td>301+</td>
+				<td style="background-color:#d2798f;">Hazardous</td>
+			</tr>
+			</table>
+		""", unsafe_allow_html=True)
 
-				</table>
-			""", unsafe_allow_html=True)
 
 
 # 📁 PAGE 2: FILTER & DOWNLOAD
