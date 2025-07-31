@@ -1,0 +1,11 @@
+streamlit
+streamlit_navigation_bar
+pandas
+psycopg2
+folium
+streamlit_folium
+numpy
+scipy
+geopandas
+shapely
+scikit-learn
