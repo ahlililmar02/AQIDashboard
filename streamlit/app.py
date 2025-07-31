@@ -290,7 +290,7 @@ if page == "Air Quality Monitor":
 			
 			with st.container(key="left_box"):
 					st.markdown(f"""
-						<div style="font-size: 20px; font-weight: 600; margin-bottom: 10px;">
+						<div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">
 							Latest from {latest_row["station"]}
 						</div>
 					""", unsafe_allow_html=True)
@@ -312,10 +312,11 @@ if page == "Air Quality Monitor":
 								border-radius:12px;
 								text-align:center;
 							">
-								<h3 style='font-size:18px;margin:0;'>{label}</h3>
-								<p style='font-size:24px;margin:0;'>{value}</p>
+								<h3 style='font-size:14px;margin:0;'>{label}</h3>
+								<p style='font-size:14px;margin:0;'>{value}</p>
 							</div>
 						"""
+					st.markdown("<br>", unsafe_allow_html=True)
 
 					# Column 1: Time
 					col1.markdown(card_style(label="Time", value=time_value), unsafe_allow_html=True)
@@ -331,10 +332,11 @@ if page == "Air Quality Monitor":
 			with st.container(key="time_series"):
 					# 📈 Time series
 					st.markdown("""
-					<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+					<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
 						Time Series
 					</div>
 					""", unsafe_allow_html=True)
+					st.markdown("<br>", unsafe_allow_html=True)
 
 					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=280,use_container_width=True)
 			
@@ -351,7 +353,7 @@ if page == "Air Quality Monitor":
 			# 📈 Display as bar chart
 			with st.container(key="bar_chart"):
 				st.markdown("""
-					<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+					<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
 						Daily Average AQI and PM2.5 This Week
 					</div>
 				""", unsafe_allow_html=True)
@@ -400,6 +402,7 @@ if page == "Air Quality Monitor":
 					width=800,
 				)
 
+				st.markdown("<br>", unsafe_allow_html=True)
 				st.altair_chart(bar_chart,use_container_width=True)
 
 		# RIGHT COLUMN: Top 5 stations
@@ -407,7 +410,7 @@ if page == "Air Quality Monitor":
 
 			with st.container(key="right_box"):
 				st.markdown("""
-				<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+				<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
 					Highest AQI Today
 				</div>
 				""", unsafe_allow_html=True)
@@ -433,10 +436,10 @@ if page == "Air Quality Monitor":
 						margin-bottom: 8px;
 						box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 					">
-						<div style="font-size: 16px; font-weight: bold;">
+						<div style="font-size: 14px; font-weight: bold;">
 							#{i} {station}
 						</div>
-						<div style="font-size: 14px;">
+						<div style="font-size: 12px;">
 							AQI: <b>{int(aqi)}</b> | PM2.5: <b>{pm25:.1f} µg/m³</b>
 						</div>
 					</div>
@@ -447,7 +450,7 @@ if page == "Air Quality Monitor":
 			with st.container(key="right_box_low"):
 				# Bottom 5
 				st.markdown("""
-				<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+				<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
 					Lowest AQI Today
 				</div>
 				""", unsafe_allow_html=True)
@@ -469,10 +472,10 @@ if page == "Air Quality Monitor":
 						margin-bottom: 8px;
 						box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 					">
-						<div style="font-size: 16px; font-weight: bold;">
+						<div style="font-size: 14px; font-weight: bold;">
 							#{i} {station}
 						</div>
-						<div style="font-size: 14px;">
+						<div style="font-size: 12px;">
 							AQI: <b>{int(aqi)}</b> | PM2.5: <b>{pm25:.1f} µg/m³</b>
 						</div>
 					</div>
