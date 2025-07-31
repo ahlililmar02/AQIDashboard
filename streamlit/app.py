@@ -519,27 +519,27 @@ if page == "Air Quality Monitor":
 				</tr>
 				<tr>
 					<td>0 – 50</td>
-					<td style="background-color:#b2e2c4;">Good</td> <!-- pastel green -->
+					<td style="background-color:#66c2a4;">Good</td> <!-- pastel green -->
 				</tr>
 				<tr>
 					<td>51 – 100</td>
-					<td style="background-color:#fff5b2;">Moderate</td> <!-- pastel yellow -->
+					<td style="background-color:#ffe066;">Moderate</td> <!-- pastel yellow -->
 				</tr>
 				<tr>
 					<td>101 – 150</td>
-					<td style="background-color:#ffd8a8;">Unhealthy for Sensitive Groups</td> <!-- pastel orange -->
+					<td style="background-color:#ffb266;">Unhealthy for Sensitive Groups</td> <!-- pastel orange -->
 				</tr>
 				<tr>
 					<td>151 – 200</td>
-					<td style="background-color:#f4b4b4;">Unhealthy</td> <!-- pastel red -->
+					<td style="background-color:#ff6666;">Unhealthy</td> <!-- pastel red -->
 				</tr>
 				<tr>
 					<td>201 – 300</td>
-					<td style="background-color:#d1b3ff;">Very Unhealthy</td> <!-- pastel purple -->
+					<td style="background-color:#b266ff;">Very Unhealthy</td> <!-- pastel purple -->
 				</tr>
 				<tr>
 					<td>301+</td>
-					<td style="background-color:#e5b3bb;">Hazardous</td> <!-- pastel maroon -->
+					<td style="background-color:#d2798f;">Hazardous</td> <!-- pastel maroon -->
 				</tr>
 
 				</table>
