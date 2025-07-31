@@ -433,7 +433,7 @@ if page == "Air Quality Monitor":
 						border-left: 5px solid {color};
 						padding: 16px 10px;
 						border-radius: 8px;
-						margin-bottom: 8px;
+						margin-bottom: 10px;
 						box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 					">
 						<div style="font-size: 14px; font-weight: bold;">
@@ -470,7 +470,7 @@ if page == "Air Quality Monitor":
 						border-left: 5px solid {color};
 						padding: 16px 10px;
 						border-radius: 8px;
-						margin-bottom: 8px;
+						margin-bottom: 10px;
 						box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 					">
 						<div style="font-size: 14px; font-weight: bold;">
