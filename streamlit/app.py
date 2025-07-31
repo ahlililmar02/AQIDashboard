@@ -14,19 +14,7 @@ from streamlit_option_menu import option_menu
 
 
 # Set wide layout
-st.set_page_config(page_title="Air Quality Dashboard", layout="wide")
-
-st.markdown(
-    """
-    <style>
-        .main {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.set_page_config(page_title="Air Quality Dashboard", layout="centered")
 
 st.markdown("""
 	<style>
