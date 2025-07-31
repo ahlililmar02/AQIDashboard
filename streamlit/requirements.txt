@@ -1,5 +1,5 @@
 streamlit
-streamlit_navigation_bar
+streamlit-option-menu
 pandas
 psycopg2-binary
 folium
