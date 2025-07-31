@@ -328,9 +328,6 @@ if page == "Air Quality Monitor":
 
 					# Optional spacing
 					st.markdown("<br>", unsafe_allow_html=True)
-
-			
-			
 			
 			with st.container(key="time_series"):
 					# 📈 Time series
@@ -340,7 +337,7 @@ if page == "Air Quality Monitor":
 					</div>
 					""", unsafe_allow_html=True)
 
-					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=300,use_container_width=True)
+					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=290,use_container_width=True)
 			
 			from datetime import timedelta
 			
@@ -409,7 +406,6 @@ if page == "Air Quality Monitor":
 
 		# RIGHT COLUMN: Top 5 stations
 		with right_col:
-			
 
 			with st.container(key="right_box"):
 				st.markdown("""
@@ -483,8 +479,68 @@ if page == "Air Quality Monitor":
 						</div>
 					</div>
 					""", unsafe_allow_html=True)
+	st.html("""
+		<style>
+		.st-key-about, {
+			background-color: white;
+			padding: 20px;
+			border-radius: 12px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			margin-bottom: 20px;
+		}
+		</style>
+		""")
+	with st.container(key="about"):
+		st.markdown("""
+			### What is the Air Quality Index (AQI)?
+			The **Air Quality Index (AQI)** is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
 
+			<style>
+			.aqi-table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+			.aqi-table th, .aqi-table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: center;
+			}
+			.aqi-table th {
+				background-color: #f2f2f2;
+			}
+			</style>
 
+			<table class="aqi-table">
+			<tr>
+				<th>AQI Range</th>
+				<th>Level of Health Concern</th>
+			</tr>
+			<tr>
+				<td>0 – 50</td>
+				<td style="background-color:#009966; color:white;">Good</td>
+			</tr>
+			<tr>
+				<td>51 – 100</td>
+				<td style="background-color:#ffde33;">Moderate</td>
+			</tr>
+			<tr>
+				<td>101 – 150</td>
+				<td style="background-color:#ff9933;">Unhealthy for Sensitive Groups</td>
+			</tr>
+			<tr>
+				<td>151 – 200</td>
+				<td style="background-color:#cc0033; color:white;">Unhealthy</td>
+			</tr>
+			<tr>
+				<td>201 – 300</td>
+				<td style="background-color:#660099; color:white;">Very Unhealthy</td>
+			</tr>
+			<tr>
+				<td>301+</td>
+				<td style="background-color:#7e0023; color:white;">Hazardous</td>
+			</tr>
+			</table>
+		""", unsafe_allow_html=True)
 
 
 # 📁 PAGE 2: FILTER & DOWNLOAD
