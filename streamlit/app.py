@@ -298,28 +298,33 @@ if page == "Air Quality Monitor":
 					
 					col1, col2, col3 = st.columns(3)
 
-					# Column 1: Time
-					col1.metric("Time", latest_row["time"].strftime('%H:%M'))
-
-					latest_row["color"] = get_rgba_color(latest_row["aqi"])
-
-					# Column 2: AQI with colored card
+					# Styling values
+					time_value = latest_row["time"].strftime('%H:%M')
 					aqi_value = latest_row["aqi"]
-					color = latest_row["color"]
-					col2.markdown(f"""
+					pm_value = latest_row["PM2.5"]
+					color = get_rgba_color(aqi_value)
+
+					card_style = lambda bg_color="white": f"""
 						<div style="
-							background-color:{color};
+							background-color:{bg_color};
 							padding:20px;
 							border-radius:12px;
 							box-shadow:0 2px 4px rgba(0,0,0,0.1);
+							text-align:center;
 						">
-							<h3 style='font-size:18px;margin:0;'>AQI</h3>
-							<p style='font-size:24px;margin:0;'>{aqi_value:.0f}</p>
+							<h3 style='font-size:18px;margin:0 0 10px;'>{{label}}</h3>
+							<p style='font-size:24px;margin:0;'>{{value}}</p>
 						</div>
-					""", unsafe_allow_html=True)
+					"""
+
+					# Column 1: Time
+					col1.markdown(card_style()(label="Time", value=time_value), unsafe_allow_html=True)
+
+					# Column 2: AQI with color
+					col2.markdown(card_style(bg_color=color).format(label="AQI", value=f"{aqi_value:.0f}"), unsafe_allow_html=True)
 
 					# Column 3: PM2.5
-					col3.metric("PM2.5", f"{latest_row['PM2.5']:.1f} µg/m³")
+					col3.markdown(card_style()(label="PM2.5", value=f"{pm_value:.1f} µg/m³"), unsafe_allow_html=True)
 
 					# Optional spacing
 					st.markdown("<br>", unsafe_allow_html=True)
