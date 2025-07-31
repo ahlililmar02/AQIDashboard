@@ -304,27 +304,28 @@ if page == "Air Quality Monitor":
 					pm_value = latest_row["PM2.5"]
 					color = get_rgba_color(aqi_value)
 
-					card_style = lambda bg_color="white": f"""
-						<div style="
-							background-color:{bg_color};
-							padding:20px;
-							border-radius:12px;
-							box-shadow:0 2px 4px rgba(0,0,0,0.1);
-							text-align:center;
-						">
-							<h3 style='font-size:18px;margin:0 0 10px;'>{{label}}</h3>
-							<p style='font-size:24px;margin:0;'>{{value}}</p>
-						</div>
-					"""
+					def card_style(label, value, color="#ffffff"):
+						return f"""
+							<div style="
+								background-color:{color};
+								padding:20px;
+								border-radius:12px;
+								box-shadow:0 2px 4px rgba(0,0,0,0.1);
+								text-align:center;
+							">
+								<h3 style='font-size:18px;margin:0;'>{label}</h3>
+								<p style='font-size:24px;margin:0;'>{value}</p>
+							</div>
+						"""
 
 					# Column 1: Time
-					col1.markdown(card_style()(label="Time", value=time_value), unsafe_allow_html=True)
+					col1.markdown(card_style(label="Time", value=time_value), unsafe_allow_html=True)
 
 					# Column 2: AQI with color
 					col2.markdown(card_style(bg_color=color).format(label="AQI", value=f"{aqi_value:.0f}"), unsafe_allow_html=True)
 
 					# Column 3: PM2.5
-					col3.markdown(card_style()(label="PM2.5", value=f"{pm_value:.1f} µg/m³"), unsafe_allow_html=True)
+					col3.markdown(card_style(label="PM2.5", value=f"{pm_value:.1f} µg/m³"), unsafe_allow_html=True)
 
 					# Optional spacing
 					st.markdown("<br>", unsafe_allow_html=True)
