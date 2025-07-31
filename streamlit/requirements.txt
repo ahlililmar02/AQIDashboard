@@ -1,7 +1,7 @@
 streamlit
 streamlit_navigation_bar
 pandas
-psycopg2
+psycopg2-binary
 folium
 streamlit_folium
 numpy
