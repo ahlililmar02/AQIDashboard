@@ -360,7 +360,7 @@ if page == "Air Quality Monitor":
 					color=alt.Color("Metric:N", scale=custom_color),
 					tooltip=["Metric", "Value"]
 				).properties(
-					height=280,
+					height=290,
 					width=800,
 				)
 
