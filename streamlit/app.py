@@ -1,6 +1,5 @@
 
 import streamlit as st
-from streamlit_navigation_bar import st_navbar
 import pandas as pd
 import psycopg2
 import folium
@@ -11,7 +10,7 @@ from folium import CircleMarker
 import geopandas as gpd
 from shapely.geometry import Point
 from sklearn.metrics import r2_score
-from streamlit_navigation_bar import st_navbar
+from streamlit_option_menu import option_menu
 
 
 # Set wide layout
@@ -29,10 +28,15 @@ st.markdown("""
 # 🔽 Navbar
 # Sidebar navigation
 
-st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-
-page = st_navbar(["📊 Dashboard", "🗺️ Air Quality Jakarta Map","🌫️ AOD Derived PM2.5 Heatmap"])
+with st.sidebar:
+    page = option_menu(
+        "Main Menu",
+        ["📊 Dashboard", "🗺️ Air Quality Jakarta Map", "🌫️ AOD Derived PM2.5 Heatmap"],
+        icons=["bar-chart", "map", "cloud"],
+        menu_icon="cast",
+        default_index=0
+    )
 
 
 st.markdown("""
