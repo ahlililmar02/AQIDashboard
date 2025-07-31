@@ -86,9 +86,9 @@ df_today = df[df["time"] >= today]
 df_today_avg = df_today.groupby("station")[["aqi", "PM2.5"]].mean().reset_index()
 df_today_avg = df_today_avg[df_today_avg["aqi"].notna() & (df_today_avg["aqi"] != 0)]
 
-with open("static/style.css") as f:
+with open("streamlit/static/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-	
+
 if page == "Air Quality Monitor":
 	st.title("Real-Time Air Quality Dashboard")
 
