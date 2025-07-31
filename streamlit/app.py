@@ -479,6 +479,8 @@ if page == "Air Quality Monitor":
 						</div>
 					</div>
 					""", unsafe_allow_html=True)
+					st.markdown("<br>", unsafe_allow_html=True)
+					
 	st.html("""
 		<style>
 		.st-key-about, {
@@ -490,6 +492,7 @@ if page == "Air Quality Monitor":
 		}
 		</style>
 		""")
+	
 	with st.container(key="about"):
 		st.markdown("""
 			### What is the Air Quality Index (AQI)?
