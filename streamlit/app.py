@@ -337,7 +337,7 @@ if page == "Air Quality Monitor":
 					</div>
 					""", unsafe_allow_html=True)
 
-					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=290,use_container_width=True)
+					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=280,use_container_width=True)
 			
 			from datetime import timedelta
 			
@@ -490,7 +490,8 @@ if page == "Air Quality Monitor":
 	}
 	"""
 
-	st.html(f"<style>{css2}</style>")
+	st.html(f"<style>{css3}</style>")
+
 	with st.container(key="about"):
 			st.markdown("""
 				### What is the Air Quality Index (AQI)?
