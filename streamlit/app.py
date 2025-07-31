@@ -221,14 +221,8 @@ if page == "Air Quality Monitor":
 
 	with st.container(key="map"):
 		
-		map_output = st_folium(m, height=700,use_container_width=True, returned_objects=["last_object_clicked"])
-		st.markdown("""
-			<style>
-			iframe {
-				margin-bottom: 0 !important;
-			}
-			</style>
-		""", unsafe_allow_html=True)
+		map_output = st_folium(m, height=500,use_container_width=True, returned_objects=["last_object_clicked"])
+
 		# 📘 Legend
 		legend_html = """
 		<div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px;">
