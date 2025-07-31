@@ -145,7 +145,7 @@ if page == "Air Quality Monitor":
 		zoom_start=13,
 		control_scale=True,
 		scrollWheelZoom=True,
-		tiles="CartoDB positron",
+		tiles="OpenStreetMap",
 	)
 
 	from folium.features import DivIcon
