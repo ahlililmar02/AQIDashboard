@@ -90,8 +90,12 @@ with open("streamlit/static/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 if page == "Air Quality Monitor":
-	st.title("Real-Time Air Quality Dashboard")
-
+	st.markdown(f"""
+							<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+								Real-Time Air Quality Dashboard
+							</div>
+						""", unsafe_allow_html=True)
+	
 	import datetime
 	
 	# Get today's date (without time)
@@ -203,8 +207,12 @@ if page == "Air Quality Monitor":
 		).add_to(m)
 
 	# 🌍 Show map full-width
+	st.markdown(f"""
+						<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
+							🗺️ Air Quality Jakarta Map
+						</div>
+					""", unsafe_allow_html=True)
 
-	st.subheader("🗺️ Air Quality Jakarta Map")
 	css2 = """
 	.st-key-map {
 		background-color: white;
