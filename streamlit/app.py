@@ -211,7 +211,7 @@ if page == "Air Quality Monitor":
 
 	with st.container(key="map"):
 		
-		map_output = st_folium(m, height=800,use_container_width=True, returned_objects=["last_object_clicked"])
+		map_output = st_folium(m, height=700,use_container_width=True, returned_objects=["last_object_clicked"])
 		st.markdown("""
 			<style>
 			iframe {
