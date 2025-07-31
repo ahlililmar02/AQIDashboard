@@ -295,7 +295,7 @@ if page == "Air Quality Monitor":
 						</div>
 					""", unsafe_allow_html=True)
 					# 📊 Scorecards
-					
+					st.markdown("<br>", unsafe_allow_html=True)
 					col1, col2, col3 = st.columns(3)
 
 					# Styling values
