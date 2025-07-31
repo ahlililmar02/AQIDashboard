@@ -360,13 +360,12 @@ if page == "Air Quality Monitor":
 					color=alt.Color("Metric:N", scale=custom_color),
 					tooltip=["Metric", "Value"]
 				).properties(
-					height=270,
+					height=280,
 					width=800,
 				)
 
 				st.markdown("<br>", unsafe_allow_html=True)
 				st.altair_chart(bar_chart,use_container_width=True)
-				st.markdown("<br>", unsafe_allow_html=True)
 
 		# RIGHT COLUMN: Top 5 stations
 		with right_col:
