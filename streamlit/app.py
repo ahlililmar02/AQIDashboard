@@ -255,6 +255,8 @@ if page == "Air Quality Monitor":
 
 	# 7. Now compute station data (based on final selected_station)
 	station_df = df[df["station"] == selected_station].sort_values("time")
+	station_df_today = df_today[df_today["station"] == selected_station].sort_values("time")
+
 	latest_row = station_df.iloc[-1]
 
 	# 8. Split into 3 columns: left = metrics + chart, middle = space, right = top 5 AQI
@@ -300,7 +302,7 @@ if page == "Air Quality Monitor":
 					</div>
 					""", unsafe_allow_html=True)
 
-					st.line_chart(station_df.set_index("time")[["aqi", "PM2.5"]], height=300,use_container_width=True)
+					st.line_chart(station_df_today.set_index("time")[["aqi", "PM2.5"]], height=300,use_container_width=True)
 			
 			from datetime import timedelta
 			
