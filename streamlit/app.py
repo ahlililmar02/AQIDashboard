@@ -327,7 +327,6 @@ if page == "Air Quality Monitor":
 					col3.markdown(card_style(label="PM2.5", value=f"{pm_value:.1f} µg/m³"), unsafe_allow_html=True)
 
 					# Optional spacing
-					st.markdown("<br>", unsafe_allow_html=True)
 			
 			with st.container(key="time_series"):
 					# 📈 Time series
@@ -401,7 +400,6 @@ if page == "Air Quality Monitor":
 					width=800,
 				)
 
-				st.markdown("<br>", unsafe_allow_html=True)
 				st.altair_chart(bar_chart,use_container_width=True)
 
 		# RIGHT COLUMN: Top 5 stations
