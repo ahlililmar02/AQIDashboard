@@ -312,7 +312,7 @@ if page == "Air Quality Monitor":
 								border-radius:12px;
 								text-align:center;
 							">
-								<h3 style='font-size:14px;margin:0;'>{label}</h3>
+								<p style='font-size:14px;margin:0;'>{label}</p>
 								<p style='font-size:14px;margin:0;'>{value}</p>
 							</div>
 						"""
