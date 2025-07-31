@@ -301,7 +301,8 @@ if page == "Air Quality Monitor":
 					# Column 1: Time
 					col1.metric("Time", latest_row["time"].strftime('%H:%M'))
 
-					latest_row["color"] = latest_row["aqi"].apply(get_rgba_color)
+					latest_row["color"] = get_rgba_color(latest_row["aqi"])
+
 					# Column 2: AQI with colored card
 					aqi_value = latest_row["aqi"]
 					color = latest_row["color"]
