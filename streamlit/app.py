@@ -300,7 +300,7 @@ if page == "Air Quality Monitor":
 					</div>
 					""", unsafe_allow_html=True)
 
-					st.line_chart(station_df.set_index("time")[["aqi", "PM2.5"]], height=300, width=800 ,use_container_width=False)
+					st.line_chart(station_df.set_index("time")[["aqi", "PM2.5"]], height=300,use_container_width=True)
 			
 			from datetime import timedelta
 			
@@ -365,7 +365,7 @@ if page == "Air Quality Monitor":
 				)
 
 				st.markdown("<br>", unsafe_allow_html=True)
-				st.altair_chart(bar_chart,use_container_width=False)
+				st.altair_chart(bar_chart,height=290,use_container_width=True)
 				st.markdown("<br>", unsafe_allow_html=True)
 
 		# RIGHT COLUMN: Top 5 stations
@@ -662,5 +662,5 @@ elif page == "AOD Derived PM2.5 Heatmap":
 			# ✅ Explicitly select y-columns to avoid mixed-type error
 			st.markdown("<br>", unsafe_allow_html=True)
 
-			st.scatter_chart(scatter_df[["Real PM2.5", "AOD-Derived PM2.5"]],width=1500, use_container_width=False)
+			st.scatter_chart(scatter_df[["Real PM2.5", "AOD-Derived PM2.5"]],height=400, use_container_width=True)
 
