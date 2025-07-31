@@ -33,7 +33,7 @@ with st.sidebar:
     page = option_menu(
         "Main Menu",
         ["Air Quality Monitor", "Download Data", "AOD Derived PM2.5 Heatmap"],
-        icons=["bar-chart", "map", "cloud"],
+        icons=["bar-chart", "download", "cloud"],
         menu_icon="cast",
         default_index=0
     )
