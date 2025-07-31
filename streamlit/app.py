@@ -29,6 +29,9 @@ st.markdown("""
 # 🔽 Navbar
 # Sidebar navigation
 
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+
 page = st_navbar(["📊 Dashboard", "🗺️ Air Quality Jakarta Map","🌫️ AOD Derived PM2.5 Heatmap"])
 
 
@@ -69,9 +72,6 @@ def load_data():
 	df_pm25 = pd.read_sql(query2, conn)
 	conn.close()
 	return df, df_pm25
-
-
-
 
 
 # 🚀 LOAD DATA
