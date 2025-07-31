@@ -139,13 +139,20 @@ if page == "Air Quality Monitor":
 	# 🔘 Selectors with custom container
 	with st.container(key="selector_box"):
 		sourceid_list = df_latest["sourceid"].unique()
-		selected_source = st.selectbox("🛰️ Select Source ID", sourceid_list)
+
+		# Set default for source ID (e.g., first one or a specific value)
+		default_source = sourceid_list[0]  # or 'SOME_SOURCE_ID' if you know the ID
+		selected_source = st.selectbox("🛰️ Select Source ID", sourceid_list, index=list(sourceid_list).index(default_source))
 
 		stations_in_source = df_latest[df_latest["sourceid"] == selected_source]["station"].unique()
-		selected_station = st.selectbox("📍 Select Station", stations_in_source)
+
+		# Set default for station (e.g., first one or a specific station)
+		default_station = stations_in_source[0]
+		selected_station = st.selectbox("📍 Select Station", stations_in_source, index=list(stations_in_source).index(default_station))
 
 		selected_row = df_latest[df_latest["station"] == selected_station].iloc[0]
 		center = [selected_row["latitude"], selected_row["longitude"]]
+
 
 	st.markdown("<br>", unsafe_allow_html=True)
 
@@ -290,11 +297,32 @@ if page == "Air Quality Monitor":
 					# 📊 Scorecards
 					
 					col1, col2, col3 = st.columns(3)
+
+					# Column 1: Time
 					col1.metric("Time", latest_row["time"].strftime('%H:%M'))
-					col2.metric("AQI", f"{latest_row['aqi']:.0f}")
+
+					# Column 2: AQI with colored card
+					aqi_value = latest_row["aqi"]
+					color = latest_row["color"]
+					col2.markdown(f"""
+						<div style="
+							background-color:{color};
+							padding:20px;
+							border-radius:12px;
+							box-shadow:0 2px 4px rgba(0,0,0,0.1);
+							text-align:center;
+						">
+							<h3 style='margin:0;'>AQI</h3>
+							<p style='font-size:24px;margin:0;'>{aqi_value:.0f}</p>
+						</div>
+					""", unsafe_allow_html=True)
+
+					# Column 3: PM2.5
 					col3.metric("PM2.5", f"{latest_row['PM2.5']:.1f} µg/m³")
 
+					# Optional spacing
 					st.markdown("<br>", unsafe_allow_html=True)
+
 			
 			
 			
