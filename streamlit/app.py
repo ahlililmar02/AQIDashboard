@@ -15,6 +15,19 @@ from streamlit_option_menu import option_menu
 
 # Set wide layout
 st.set_page_config(page_title="Air Quality Dashboard", layout="wide")
+
+st.markdown(
+    """
+    <style>
+        .main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.markdown("""
 	<style>
 		html, body, .stApp {
@@ -447,8 +460,6 @@ if page == "Air Quality Monitor":
 					""", unsafe_allow_html=True)
 
 
-
-	
 
 
 # 📁 PAGE 2: FILTER & DOWNLOAD
