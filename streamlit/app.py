@@ -500,8 +500,8 @@ if page == "Air Quality Monitor":
 					What is the Air Quality Index (AQI)?
 				</div>
 			   
-			<div style="font-size:14px; font-weight:600; margin-bottom:10px;">
-			The **Air Quality Index (AQI)** is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
+			<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
+			The Air Quality Index (AQI) is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
 			</div>
 			<style>
 			.aqi-table {
