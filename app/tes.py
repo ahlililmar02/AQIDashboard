@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+import os
 import psycopg2
 import folium
 from streamlit_folium import st_folium
@@ -9,31 +10,36 @@ from scipy.spatial import cKDTree
 from folium import CircleMarker
 import geopandas as gpd
 from shapely.geometry import Point
-from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
 from streamlit_option_menu import option_menu
 
 
 # Set wide layout
 st.set_page_config(
-    page_title="Air Quality Dashboard",
-    layout="wide",
-    initial_sidebar_state="auto",
-    menu_items={
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app!"
-    }
+	page_title="Air Quality Dashboard",
+	layout="wide",
+	initial_sidebar_state="auto",
+	menu_items={
+		'Get Help': 'https://www.extremelycoolapp.com/help',
+		'Report a bug': "https://www.extremelycoolapp.com/bug",
+		'About': "# This is a header. This is an *extremely* cool app!"
+	}
 )
 
+# Inject custom CSS to zoom page to 80%
+#st.markdown(	""" <style>	html, body, [class*="css"]  {		zoom: 0.8;		}</style>""",unsafe_allow_html=True)
 
 with st.sidebar:
-    page = option_menu(
-        "Main Menu",
-        ["Air Quality Monitor", "Download Data", "AOD Derived PM2.5 Heatmap"],
-        icons=["bar-chart", "download", "cloud"],
-        menu_icon="cast",
-        default_index=0
-    )
+	st.title("Jakarta Air Quality Dashboard")  # Title without icon
+
+	page = option_menu(
+		menu_title=None,
+		options=["Air Quality Monitor", "Download Data", "AOD Derived PM2.5 Heatmap", "About"],
+		icons=["bar-chart", "download", "cloud", "info-circle"],
+		default_index=0
+	)
+
+
 
 
 st.markdown("""
@@ -48,17 +54,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Connect and read data
-@st.cache_data
+@st.cache_data(ttl=3600)  # 3600 seconds = 1 hour
 def load_data():
-	creds = st.secrets["postgres"]
-
 	conn = psycopg2.connect(
-		host=creds["host"],
-		port=creds["port"],
-		dbname=creds["dbname"],
-		user=creds["user"],
-		password=creds["password"]
+		host=os.environ.get("DB_HOST"),
+		port=os.environ.get("DB_PORT"),
+		dbname=os.environ.get("DB_NAME"),
+		user=os.environ.get("DB_USER"),
+		password=os.environ.get("DB_PASS")
 	)
+
 	query = """
 		SELECT *
 		FROM tes
@@ -86,15 +91,91 @@ df_today = df[df["time"] >= today]
 df_today_avg = df_today.groupby("station")[["aqi", "PM2.5"]].mean().reset_index()
 df_today_avg = df_today_avg[df_today_avg["aqi"].notna() & (df_today_avg["aqi"] != 0)]
 
-with open("streamlit/static/style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+with open("static/style.css") as f:
+	st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 if page == "Air Quality Monitor":
 	st.markdown(f"""
-							<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">
+							<div style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
 								Real-Time Air Quality Dashboard
 							</div>
 						""", unsafe_allow_html=True)
+						
+	css3 = """
+	.st-key-about {
+		background-color: white;
+		padding: 20px;
+		border-radius: 10px;
+		margin-bottom: 20px;
+	}
+	"""
+
+	st.html(f"<style>{css3}</style>")
+
+	with st.container(key="about"):
+			st.markdown("""
+			<div style="font-size:16px; font-weight:500; margin-bottom:10px;">
+					What is Air Quality Index (AQI)?
+				</div>
+			   
+			<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
+			Air Quality Index (AQI) is an indicator used to communicate how polluted the air currently is, and what associated health effects might be a concern for you. The AQI focuses on health effects you may experience within a few hours or days after breathing polluted air. Here's how to interpret the AQI values:
+			</div>
+			<style>
+				.aqi-table {
+					border-collapse: collapse;
+					width: 100%;
+					font-size: 12px;
+				}
+				.aqi-table th, .aqi-table td {
+					border: 1px solid #ddd;
+					padding: 8px;
+					text-align: center;
+				}
+				.aqi-table th {
+					background-color: #f2f2f2;
+				}
+			</style>
+
+			<table class="aqi-table">
+			<tr>
+				<th>AQI Range</th>
+				<th>PM2.5 (µg/m³)</th>
+				<th>Level of Health Concern</th>
+			</tr>
+			<tr>
+				<td>0 – 50</td>
+				<td>0.0 – 12.0</td>
+				<td style="background-color:#66c2a4;">Good</td>
+			</tr>
+			<tr>
+				<td>51 – 100</td>
+				<td>12.1 – 35.4</td>
+				<td style="background-color:#ffe066;">Moderate</td>
+			</tr>
+			<tr>
+				<td>101 – 150</td>
+				<td>35.5 – 55.4</td>
+				<td style="background-color:#ffb266;">Unhealthy for Sensitive Groups</td>
+			</tr>
+			<tr>
+				<td>151 – 200</td>
+				<td>55.5 – 150.4</td>
+				<td style="background-color:#ff6666;">Unhealthy</td>
+			</tr>
+			<tr>
+				<td>201 – 300</td>
+				<td>150.5 – 250.4</td>
+				<td style="background-color:#b266ff;">Very Unhealthy</td>
+			</tr>
+			<tr>
+				<td>301+</td>
+				<td>250.5+</td>
+				<td style="background-color:#d2798f;">Hazardous</td>
+			</tr>
+			</table>
+			""", unsafe_allow_html=True)
+
 	
 	import datetime
 	
@@ -160,7 +241,11 @@ if page == "Air Quality Monitor":
 
 	from folium.features import DivIcon
 
-	for _, row in df_latest.iterrows():
+	# Filter hanya data dari selected_source
+	filtered_df = df_latest[df_latest["sourceid"] == selected_source]
+
+	# Loop untuk semua station dalam source itu
+	for _, row in filtered_df.iterrows():
 		aqi = row["aqi"]
 		color = row["color"]
 		label = f"{int(aqi)}" if pd.notna(aqi) else "?"
@@ -207,12 +292,6 @@ if page == "Air Quality Monitor":
 		).add_to(m)
 
 	# 🌍 Show map full-width
-	st.markdown(f"""
-						<div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
-							🗺️ Air Quality Jakarta Map
-						</div>
-					""", unsafe_allow_html=True)
-
 	css2 = """
 	.st-key-map {
 		background-color: white;
@@ -480,79 +559,16 @@ if page == "Air Quality Monitor":
 					""", unsafe_allow_html=True)
 					
 					
-	css3 = """
-	.st-key-about {
-		background-color: white;
-		padding: 20px;
-		border-radius: 10px;
-		margin-bottom: 20px;
-	}
-	"""
-
-	st.html(f"<style>{css3}</style>")
-
-	with st.container(key="about"):
-			st.markdown("""
-			<div style="font-size:16px; font-weight:600; margin-bottom:10px;">
-					What is the Air Quality Index (AQI)?
-				</div>
-			   
-			<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
-			The Air Quality Index (AQI) is a standardized indicator used to communicate how polluted the air currently is or how polluted it is forecast to become. Here's how to interpret the AQI values:
-			</div>
-			<style>
-			.aqi-table {
-				border-collapse: collapse;
-				width: 100%;
-				font-size: 12px;
-			}
-			.aqi-table th, .aqi-table td {
-				border: 1px solid #ddd;
-				padding: 8px;
-				text-align: center;
-			}
-			.aqi-table th {
-				background-color: #f2f2f2;
-			}
-			</style>
-
-			<table class="aqi-table">
-			<tr>
-				<th>AQI Range</th>
-				<th>Level of Health Concern</th>
-			</tr>
-			<tr>
-				<td>0 – 50</td>
-				<td style="background-color:#66c2a4;">Good</td>
-			</tr>
-			<tr>
-				<td>51 – 100</td>
-				<td style="background-color:#ffe066;">Moderate</td>
-			</tr>
-			<tr>
-				<td>101 – 150</td>
-				<td style="background-color:#ffb266;">Unhealthy for Sensitive Groups</td>
-			</tr>
-			<tr>
-				<td>151 – 200</td>
-				<td style="background-color:#ff6666;">Unhealthy</td>
-			</tr>
-			<tr>
-				<td>201 – 300</td>
-				<td style="background-color:#b266ff;">Very Unhealthy</td>
-			</tr>
-			<tr>
-				<td>301+</td>
-				<td style="background-color:#d2798f;">Hazardous</td>
-			</tr>
-			</table>
-		""", unsafe_allow_html=True)
-
+	
 
 
 # 📁 PAGE 2: FILTER & DOWNLOAD
 elif page == "Download Data":
-	st.title("Download Air Quality Data")
+	st.markdown(f"""
+							<div style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
+								Download Air Quality Data
+							</div>
+						""", unsafe_allow_html=True)
 	css = """
 		.st-key-selector_box {
 			background-color: white;
@@ -566,9 +582,19 @@ elif page == "Download Data":
 	# 🔘 Selectors with custom container
 	with st.container(key="selector_box"):
 		with st.form("filter_form"):
-			station_filter = st.multiselect("Station", options=df["station"].unique())
+			# Source ID selection (above station)
+			source_id = st.selectbox("Source ID", options=sorted(df["sourceid"].unique()))
+		
+			# Filter stations based on selected source_id
+			station_options = df[df["sourceid"] == source_id]["station"].unique()
+			station_filter = st.multiselect("Station", options=sorted(station_options))
+		
+			# Date range filter
 			date_range = st.date_input("Date range", [])
+		
+			# Submit button
 			submit = st.form_submit_button("Filter")
+
 
 	filtered = df.copy()
 	if station_filter:
@@ -578,7 +604,36 @@ elif page == "Download Data":
 		filtered = filtered[(filtered["time"] >= start) & (filtered["time"] <= end)]
 
 	st.write(f"Filtered rows: {len(filtered)}")
-	st.dataframe(filtered)
+	# Pagination setup
+	page_size = 1000
+	max_page = (len(filtered) - 1) // page_size + 1
+
+	# Initialize session state for page number
+	if "page_num" not in st.session_state:
+		st.session_state.page_num = 1
+
+	# Layout: Centered pagination bar
+	spacer1, col_prev, col_info, col_next, spacer2 = st.columns([1, 1, 2, 1, 1])
+
+	with col_prev:
+		if st.button("Prev", use_container_width=True) and st.session_state.page_num > 1:
+			st.session_state.page_num -= 1
+
+	with col_info:
+		st.markdown(
+			f"<div style='text-align:center; font-weight:bold;'>Page {st.session_state.page_num} of {max_page}</div>",
+			unsafe_allow_html=True,
+		)
+
+	with col_next:
+		if st.button("Next", use_container_width=True) and st.session_state.page_num < max_page:
+			st.session_state.page_num += 1
+
+	# Paginate the dataframe
+	start = (st.session_state.page_num - 1) * page_size
+	end = start + page_size
+	st.dataframe(filtered.iloc[start:end])
+
 
 	csv = filtered.to_csv(index=False).encode('utf-8')
 	st.download_button("Download as CSV", data=csv, file_name="air_quality_filtered.csv", mime="text/csv")
@@ -587,7 +642,22 @@ elif page == "Download Data":
 
 
 elif page == "AOD Derived PM2.5 Heatmap":
-	st.title("AOD Derived PM2.5 Heatmap Over Jakarta")
+	st.markdown(f"""
+							<div style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
+								AOD Derived PM2.5 Heatmap Over Jakarta
+							</div>
+						""", unsafe_allow_html=True)
+
+	css4 = """
+	.st-key-about_aod, {
+		background-color: white;
+		padding: 20px;
+		border-radius: 10px;
+		margin-bottom: 20px;
+	}
+	"""
+
+	st.html(f"<style>{css4}</style>")		
 
 	# Convert and filter df
 	df['time'] = pd.to_datetime(df['time'])
@@ -615,42 +685,105 @@ elif page == "AOD Derived PM2.5 Heatmap":
 
 	# 🔘 Selectors with custom container
 	with st.container(key="selector_box"):
+		st.markdown("""
+		<div style="font-size:16px; font-weight:500; margin-bottom:10px;">
+			PM2.5 Prediction Using Aerosol Optical Depth
+		</div>
+
+		<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
+			This heatmap visualizes the predicted PM2.5 concentrations, which are a key indicator of ambient air quality and potential health risks. Satellite-derived Aerosol Optical Depth (AOD) has been extensively studied as a proxy for surface-level PM2.5. For instance, Paciorek et al. (2008) identified statistically significant spatiotemporal associations between AOD retrievals and ground-level PM2.5 in the eastern United States. In our current setup, we utilize a traditional machine learning algorithm, <b>XGBoost</b>, with AOD, meteorological parameters, and land-use features as predictors. The model is retrained weekly using the latest observed PM2.5 data to support continuous validation and improvement.
+		</div>
+
+		<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
+			The heatmap is generated from tabular spatial data that has been converted into <b>GeoDataFrames</b> using the <b>GeoPandas</b> library, with a spatial resolution of approximately 800 meters. Model performance is evaluated by comparing predicted and observed PM2.5 values from monitoring stations using the <b>Mean Squared Error (MSE)</b> metric.
+		</div>
+		""", unsafe_allow_html=True)
+		
+		st.markdown("<br>", unsafe_allow_html=True)
+
+
 		selected_date = st.selectbox("📅 Select a date", available_dates)
+		st.markdown("<br>", unsafe_allow_html=True)
 		heatmap_type = st.radio("🛰️ Select Heatmap Source", ["AOD Derived", "Real"], horizontal=True)
+		# Filter and prepare data
+		if heatmap_type == "AOD Derived":
+			selected_df = df_pm25[df_pm25['date'].dt.date == selected_date]
+			selected_df = selected_df.dropna(subset=["latitude", "longitude", "pm25_estimated"])
+			heat_data = selected_df[["latitude", "longitude", "pm25_estimated"]].values.tolist()
+		else:  # Real
+			selected_df = df_10[df_10['date'] == selected_date]
+			selected_df = selected_df.dropna(subset=["latitude", "longitude", "PM2.5"])
+			heat_data = selected_df[["latitude", "longitude", "PM2.5"]].values.tolist()
 
-	# Filter and prepare data
-	if heatmap_type == "AOD Derived":
-		selected_df = df_pm25[df_pm25['date'].dt.date == selected_date]
-		selected_df = selected_df.dropna(subset=["latitude", "longitude", "pm25_estimated"])
-		heat_data = selected_df[["latitude", "longitude", "pm25_estimated"]].values.tolist()
-	else:  # Real
-		selected_df = df_10[df_10['date'] == selected_date]
-		selected_df = selected_df.dropna(subset=["latitude", "longitude", "PM2.5"])
-		heat_data = selected_df[["latitude", "longitude", "PM2.5"]].values.tolist()
+		# Map setup
+		m = folium.Map(location=[-6.2, 106.9], zoom_start=11, tiles="CartoDB positron")
 
-	# Map setup
-	m = folium.Map(location=[-6.2, 106.9], zoom_start=11, tiles="CartoDB positron")
+		# Add heatmap layer
+		from folium.plugins import HeatMap
+		HeatMap(heat_data, radius=15, blur=20, max_zoom=15).add_to(m)
 
-	# Add heatmap layer
-	from folium.plugins import HeatMap
-	HeatMap(heat_data, radius=15, blur=20, max_zoom=15).add_to(m)
+		cssmap = """
+			.st-key-heatmap {
+				background-color: white;
+				padding: 20px;
+				border-radius: 10px;
+				margin-bottom: 20px;
+			}
+			"""
+		st.html(f"<style>{cssmap}</style>")
 
-	cssmap = """
-		.st-key-heatmap {
-			background-color: white;
-			padding: 20px;
-			border-radius: 10px;
-			margin-bottom: 20px;
-		}
-		"""
-	st.html(f"<style>{cssmap}</style>")
+		source_name = "PM2.5 Estimated" if heatmap_type == "AOD Derived" else "PM2.5 Real"
+		st.markdown(f"""
+			<div style="font-size:16px; font-weight:500; margin-bottom:10px;">
+				{source_name} on {selected_date}
+			</div>
+		""", unsafe_allow_html=True)
 
-	source_name = "PM2.5 Estimated" if heatmap_type == "AOD Derived" else "PM2.5 Real"
-	st.subheader(f"{source_name} on {selected_date}")
 
-	# Show map
-	with st.container(key="heatmap"):
+		# Show map
+		#with st.container(key="heatmap"):
 		st_folium(m, height=500, use_container_width=True)
+		
+		# Dynamic legend values
+		if heatmap_type == "AOD Derived":
+			pm_values = selected_df["pm25_estimated"].values
+		else:
+			pm_values = selected_df["PM2.5"].values
+
+		pm_min = round(pm_values.min(), 1)
+		pm_max = round(pm_values.max(), 1)
+
+		# Legend HTML below the map
+		legend_html = f"""
+		<div style="
+			background-color: white;
+			padding: 5px;
+			width: 400px;
+			text-align: center;
+		">
+			<div style="display: flex; align-items: center; gap: 10px;">
+				<b style="white-space: nowrap;"> PM2.5 (µg/m³) </b>
+				<svg width="300" height="15">
+					<defs>
+						<linearGradient id="grad">
+							<stop offset="0%" stop-color="#ADD8E6" />  
+							<stop offset="33%" stop-color="#66c2a4" /> 
+							<stop offset="66%" stop-color="#ffe066" /> 
+							<stop offset="99%" stop-color="#ffb266" /> 
+						</linearGradient>
+					</defs>
+					<rect x="0" y="0" width="300" height="15" fill="url(#grad)" />
+				</svg>
+			</div>
+			<div style="display: flex; justify-content: space-between; font-size: 12px; margin-left: 90px;">
+				<span>{pm_min}</span>
+				<span>{pm_max}</span>
+			</div>
+		</div>
+	"""
+
+
+		st.markdown(legend_html, unsafe_allow_html=True)
 
 	# Optional: show table
 	csstab = """
@@ -720,20 +853,20 @@ elif page == "AOD Derived PM2.5 Heatmap":
 				matched_est = gdf_matched["pm25_estimated"]
 
 				# Metrics
-				r2 = r2_score(matched_real, matched_est)
 				mae = np.abs(matched_real - matched_est).mean()
+				rmse = np.sqrt(mean_squared_error(matched_real, matched_est))
 
-				# Reuse the same DataFrame with 'lat,lon' index
 				scatter_df = pd.DataFrame({
-					"latitude": gdf_matched["latitude_right"],
-					"longitude": gdf_matched["longitude_right"],
+					"station": gdf_matched["station"],
+					"latitude": gdf_matched["latitude_right"].round(4),
+					"longitude": gdf_matched["longitude_right"].round(4),
 					"Real PM2.5": gdf_matched["PM2.5"],
 					"AOD-Derived PM2.5": gdf_matched["pm25_estimated"]
 				})
-
-				# Add lat,lon label
-				scatter_df["lat,lon"] = scatter_df["latitude"].round(4).astype(str) + ", " + scatter_df["longitude"].round(4).astype(str)
-				scatter_df.set_index("lat,lon", inplace=True)
+				
+				scatter_df["Absolute Error"] = np.abs(scatter_df["Real PM2.5"] - scatter_df["AOD-Derived PM2.5"])
+				scatter_df = scatter_df.sort_values(by="Absolute Error", ascending=True)
+				scatter_df.set_index("station", inplace=True)
 
 		csscat = """
 				.st-key-scatter {
@@ -745,16 +878,32 @@ elif page == "AOD Derived PM2.5 Heatmap":
 				}
 				"""
 		st.html(f"<style>{csscat}</style>")
-		st.subheader("Comparison (Matched Spatial + Date)")
+		st.markdown("""
+			<div style="font-size:16px; font-weight:500; margin-bottom:10px;">
+				Comparison
+			</div> """, unsafe_allow_html=True)
 
 		with st.container(key="scatter"):
+
+			st.markdown("""
+			<div style="font-size:16px; font-weight:500; margin-bottom:10px;">
+				PM2.5 Prediction vs Actual PM2.5
+			</div>
+
+			<div style="font-size:14px; font-weight:300; margin-bottom:10px;">
+				The prediction is evaluated using data from existing monitoring stations in Jakarta. 
+				Given that the predicted PM2.5 data has an 800 m resolution, any monitoring station 
+				located within the prediction radius is considered eligible to evaluate the predicted values.
+			</div>
+			""", unsafe_allow_html=True)
+
 			# Results
 			# Score card layout
 			st.markdown("<br>", unsafe_allow_html=True)
 			col1, col2, col3 = st.columns(3)
 
 			with col1:
-				st.metric(label="R² Score", value=f"{r2:.3f}")
+				st.metric(label="Root Mean Squared Error", value=f"{rmse:.3f}")
 			with col2:
 				st.metric(label="Mean Absolute Error", value=f"{mae:.2f} µg/m³")
 			with col3:
@@ -762,5 +911,68 @@ elif page == "AOD Derived PM2.5 Heatmap":
 			# ✅ Explicitly select y-columns to avoid mixed-type error
 			st.markdown("<br>", unsafe_allow_html=True)
 
-			st.scatter_chart(scatter_df[["Real PM2.5", "AOD-Derived PM2.5"]],height=400, use_container_width=True)
+			st.scatter_chart(
+				scatter_df.sort_values(by="Absolute Error", ascending=True)[["Real PM2.5", "AOD-Derived PM2.5"]],
+				height=400,
+				x_label="station",
+				y_label="PM2.5",
+				use_container_width=True
+)
 
+elif page == "About":
+	csstab = """
+		.st-key-about_site {
+			background-color: white;
+			padding: 20px;
+			border-radius: 10px;
+			margin-bottom: 20px;
+			font-size: 14px;
+			line-height: 1.6;
+		}
+	"""
+	st.html(f"<style>{csstab}</style>")
+
+	with st.container(key="about_site"):
+		st.markdown("""
+			<div style="font-size:18px; font-weight:600; margin-bottom:15px;">
+				About This Project
+			</div>
+
+			<p>
+			This platform compiles real-time and historical air quality data for Jakarta from four independent API sources. 
+			The idea is so that users can explore and download the complete dataset for their own analysis or projects.  
+			Beyond station measurements, the platform predicts PM2.5 concentrations for any latitude–longitude coordinate in Jakarta, 
+			providing estimates in areas without direct monitoring coverage.
+			</p>
+
+			<div style="font-size:16px; font-weight:500; margin-top:20px; margin-bottom:10px;">
+				Technical Overview
+			</div>
+			<ul>
+				<li>Compile and process PM2.5 data from different APIs using <b>Python</b>.</li>
+				<li><b>PostgreSQL</b> database for efficient data storage and retrieval.</li>
+				<li>Containerized with <b>Docker</b> and deployed on an <b>Ubuntu</b> server.</li>
+				<li>Built using <b>Streamlit</b> with integrated UI components and custom assets.</li>
+				<li>Run machine learning model locally then upload it to the database.</li>
+				<li>Served through <b>NGINX</b> for performance and reliability.</li>
+			</ul>
+
+			<div style="font-size:16px; font-weight:500; margin-top:20px; margin-bottom:10px;">
+				References
+			</div>
+			<ul>
+				<li>Xue, T., Zheng, Y., Geng, G., Zheng, B., Jiang, X., Zhang, Q., & He, K. (Year). "Fusing Observational, Satellite Remote Sensing and Air Quality Model Simulated Data to Estimate Spatiotemporal Variations of PM2.5 Exposure in China."</li>
+				<li>Paciorek, C. J., et al. (2008). "Spatiotemporal associations between satellite-derived aerosol optical depth and PM2.5 in the eastern United States."</li>
+				<li><a href="https://www.iqair.com/us/indonesia/jakarta" target="_blank">IQAir Jakarta</a></li>
+				<li><a href="https://rendahemisi.jakarta.go.id/ispu" target="_blank">Jakarta Rendah Emisi</a></li>
+				<li><a href="https://aqicn.org/network/menlhk/id/" target="_blank">Kementerian Lingkungan Hidup dan Kehutanan (KLHK)</a></li>
+				<li><a href="https://id.usembassy.gov/u-s-embassy-jakarta-air-quality-monitor/" target="_blank">Udara Jakarta</a></li>
+				<li><a href="https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5" target="_blank">ERA5 (ECMWF Reanalysis v5)</a></li>
+				<li><a href="https://developers.google.com/earth-engine/datasets/tags/weather" target="_blank">Google Earth Engine</a></li>
+			</ul>
+
+			<div style="margin-top:20px; font-size:14px;">
+				<p>This project is currently in an early stage of development and will improve over time.</p>
+				<p>Connect with me on <a href="https://www.linkedin.com/in/yourprofile/" target="_blank">LinkedIn</a>.</p>
+			</div>
+			""", unsafe_allow_html=True)
